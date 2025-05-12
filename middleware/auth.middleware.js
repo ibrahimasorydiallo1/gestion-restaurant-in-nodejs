@@ -5,11 +5,13 @@ const SECRET_KEY = '4d2e69fa5a8f9b94b28f9b5e9d8b1e2f6e79b3c5f8a4d5e8d1c2f3e4f5a6
 const authMiddleware = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
-    const token = authHeader && authHeader.split(' ')[1];
-    console.log("Token reçu :", token);
-    if (!token) {
-      return res.status(401).json({ message: 'Authentication required' });
+
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ message: 'Authorization header malformed or missing' });
     }
+
+    const token = authHeader.split(' ')[1];
+    console.log("Token reçu :", token);
 
     const decoded = jwt.verify(token, SECRET_KEY);
     const user = await User.findByPk(decoded.id);
@@ -18,10 +20,11 @@ const authMiddleware = async (req, res, next) => {
       return res.status(401).json({ message: 'User not found' });
     }
 
-    req.user = user;
+    req.user = user; // Ajoute l'utilisateur à la requête
     next();
   } catch (error) {
-    return res.status(401).json({ message: 'Invalid token' });
+    console.error('Erreur middleware auth :', error.message);
+    return res.status(401).json({ message: 'Invalid or expired token' });
   }
 };
 

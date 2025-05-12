@@ -28,20 +28,20 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: 'Something went wrong!' });
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 
 // Database connection and server start
 // Test de connexion à la base de données
 (async () => {
   try {
     await sequelize.authenticate();
-    console.log('✅ Connexion à la base de données réussie');
+    console.log('Connexion à la base de données réussie');
 
     // Test pour récupérer des éléments du menu
     const [results] = await sequelize.query('SELECT * FROM menu_items');
-    console.log('📋 Menu Items:', results);
+    console.log('Menu Items:', results);
   } catch (error) {
-    console.error('❌ Impossible de se connecter à la base de données:', error);
+    console.error('Impossible de se connecter à la base de données:', error);
     process.exit(1); // Arrêter le serveur en cas d'erreur critique
   }
 })();
