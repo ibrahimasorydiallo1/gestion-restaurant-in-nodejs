@@ -31,7 +31,7 @@ router.get('/my-reservations', authMiddleware, async (req, res) => {
 });
 
 // Create reservation
-router.post('/', authMiddleware, async (req, res) => {
+router.post('/', async (req, res) => {
   try {
     const { numberOfPeople, date, time, note } = req.body;
 
